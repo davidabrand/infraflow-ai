@@ -1,0 +1,3 @@
+# Optional security gate for LLM calls. Never commit actual values.
+# Set via: npx wrangler secret put DEMO_ACCESS_CODE
+# DEMO_ACCESS_CODE=choose-a-strong-random-secret

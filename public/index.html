@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#081322">
+  <meta name="description" content="InfraFlow AI — a fictional data center hardware logistics copilot powered by Llama 3.3 on Cloudflare Workers AI.">
+  <title>InfraFlow AI · Logistics Intelligence</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" type="module" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">◈</span><div><strong>infraflow<span class="brand-suffix">AI</span></strong><small>LOGISTICS INTELLIGENCE</small></div></div>
+      <div class="workspace-label">WORKSPACE <span class="workspace-dot"></span></div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button type="button" class="nav-item active" data-nav="overview"><span class="nav-icon">▦</span>Overview</button>
+        <button type="button" class="nav-item" data-nav="shipments"><span class="nav-icon">▤</span>Shipments <span id="nav-shipment-count" class="nav-count">12</span></button>
+        <button type="button" class="nav-item" data-nav="intelligence"><span class="nav-icon">◉</span>Risk intelligence</button>
+        <button type="button" class="nav-item" data-nav="tasks"><span class="nav-icon">☷</span>Follow-up tasks <span id="nav-task-count" class="nav-count">0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="platform-card"><div class="platform-top"><span class="pulsing-dot"></span>AI COPILOT*</div><div class="platform-title">Powered by Cloudflare</div><div class="platform-detail">Workers AI · Llama 3.3 70B</div><div class="platform-detail">D1 database · Edge Workers</div></div>
+        <div class="sidebar-meta">*AI requires a configured Cloudflare account.</div>
+        <div class="profile"><div class="profile-avatar">IF</div><div><strong>Demo workspace</strong><small>Synthetic data only</small></div><span class="more">⋯</span></div>
+      </div>
+    </aside>
+
+    <div class="app-content">
+      <header class="topbar">
+        <div class="breadcrumbs"><span class="crumb-muted">Workspace</span><span class="crumb-divider">/</span><strong id="crumb-current">Overview</strong></div>
+        <div class="top-actions"><span class="environment-tag"><span class="tiny-dot"></span>DEMO ENVIRONMENT</span><span class="top-date" id="date-today"></span><button type="button" class="icon-button" id="chat-jump" aria-label="Focus AI chat">✦</button></div>
+      </header>
+      <div class="workspace">
+        <main class="main-column">
+          <section class="view" data-view="overview">
+            <div class="page-heading"><div><div class="eyebrow">OPERATIONS COMMAND CENTER <span class="separator-dot">•</span> LIVE DATABASE</div><h1>Good day, operator <span class="wave">✳</span></h1><p>Here's what's happening across your global hardware supply chain.</p></div><button id="scan-button" class="primary-button"><span class="button-icon">⌁</span> Run risk scan</button></div>
+            <div class="stat-grid">
+              <article class="stat-card"><div class="stat-top"><span>Total shipments</span><span class="stat-icon">▤</span></div><div class="stat-value" id="stat-total">—</div><div class="stat-footer"><span class="stat-soft">Across 8+ destinations</span></div></article>
+              <article class="stat-card"><div class="stat-top"><span>Active shipments</span><span class="stat-icon">↗</span></div><div class="stat-value" id="stat-active">—</div><div class="stat-footer"><span class="stat-soft">Currently in pipeline</span></div></article>
+              <article class="stat-card warn"><div class="stat-top"><span>At-risk shipments</span><span class="stat-icon warn-icon">⚑</span></div><div class="stat-value" id="stat-risk">—</div><div class="stat-footer"><span class="stat-pill orange">● Needs attention</span></div></article>
+              <article class="stat-card"><div class="stat-top"><span>Completed deliveries</span><span class="stat-icon">✓</span></div><div class="stat-value" id="stat-delivered">—</div><div class="stat-footer"><span class="stat-pill green">● Delivered</span></div></article>
+            </div>
+            <div class="overview-panels">
+              <article class="panel"><div class="panel-heading"><div><div class="panel-kicker">PRIORITY SIGNALS</div><h2>Requires your attention</h2></div><button class="text-link" data-go="intelligence">View intelligence →</button></div><div class="attention-list" id="attention-list"><div class="loading-text">Loading risk intelligence…</div></div></article>
+              <article class="panel"><div class="panel-heading"><div><div class="panel-kicker">PIPELINE HEALTH</div><h2>Shipment distribution</h2></div></div><div class="pipeline-graphic" id="pipeline-graphic"></div><div class="pipeline-legend" id="pipeline-legend"></div></article>
+            </div>
+            <article class="panel table-panel"><div class="panel-heading"><div><div class="panel-kicker">YOUR OPERATIONS</div><h2>Recent shipments</h2></div><button class="text-link" data-go="shipments">View all shipments →</button></div><div class="table-scroll"><table><thead><tr><th>SHIPMENT</th><th>DESTINATION</th><th>EXPECTED</th><th>STATUS</th><th>RISK</th><th></th></tr></thead><tbody id="overview-rows"></tbody></table></div></article>
+          </section>
+
+          <section class="view" data-view="shipments" hidden>
+            <div class="page-heading"><div><div class="eyebrow">OPERATIONS / ALL SHIPMENTS</div><h1>Shipment tracker</h1><p>Review simulated supply-chain movements and update their status.</p></div><button class="outline-button" id="refresh-shipments">↻ Refresh</button></div>
+            <article class="panel"><div class="filter-toolbar"><label class="search-wrap"><span>⌕</span><input type="search" id="shipment-search" placeholder="Search IDs, destinations, components…" aria-label="Search shipments"></label><select id="status-filter" aria-label="Filter status"><option value="all">All statuses</option><option value="delayed">Delayed</option><option value="in_transit">In transit</option><option value="at_hub">At hub</option><option value="ordered">Ordered</option><option value="delivered">Delivered</option></select><select id="risk-filter" aria-label="Filter risk"><option value="all">All risk levels</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div><div class="table-scroll"><table><thead><tr><th>SHIPMENT / COMPONENT</th><th>ORIGIN → DESTINATION</th><th>ETA</th><th>STATUS</th><th>RISK</th><th></th></tr></thead><tbody id="all-shipment-rows"></tbody></table></div><div class="table-foot"><span id="shipment-results-count"></span><span>Click a shipment to view details</span></div></article>
+          </section>
+
+          <section class="view" data-view="intelligence" hidden>
+            <div class="page-heading"><div><div class="eyebrow">INTELLIGENCE / AUTOMATED MONITORING</div><h1>Risk intelligence</h1><p>Explainable rules flag late shipments and potential inventory shortages.</p></div><button id="scan-button-alt" class="primary-button">⌁ Run risk scan</button></div>
+            <div class="info-banner"><span>✳</span><div><strong>Deterministic risk scoring</strong><p>Severity is computed by code from ETAs, carrier status, priority and spare-parts stock. Llama 3.3 explains the data; it does not invent risk scores.</p></div></div>
+            <article class="panel"><div class="panel-heading"><div><div class="panel-kicker">ALERT CENTER</div><h2>Detected exceptions</h2></div><span id="alerts-count" class="mini-count">0 recorded</span></div><div id="alerts-list" class="stack-list"></div></article>
+            <article class="panel"><div class="panel-heading"><div><div class="panel-kicker">INVENTORY EXPOSURE</div><h2>Data center stock levels</h2></div><span class="panel-note">Synthetic inventory</span></div><div class="inventory-grid" id="inventory-grid"></div></article>
+            <article class="panel"><div class="panel-heading"><div><div class="panel-kicker">AUDIT TRAIL</div><h2>Risk scan history</h2></div></div><div id="scan-history" class="stack-list"></div></article>
+          </section>
+
+          <section class="view" data-view="tasks" hidden>
+            <div class="page-heading"><div><div class="eyebrow">WORKFLOW / FOLLOW-UP QUEUE</div><h1>Follow-up tasks</h1><p>Turn risks into trackable human-approved actions.</p></div></div>
+            <div class="info-banner"><span>↗</span><div><strong>Human in the loop</strong><p>InfraFlow recommends follow-ups, but it never sends emails or makes external changes automatically. A user must create or complete each task.</p></div></div>
+            <article class="panel"><div class="panel-heading"><div><div class="panel-kicker">ACTION QUEUE</div><h2>Assigned follow-ups</h2></div><span class="mini-count" id="task-count">0 tasks</span></div><div id="tasks-list" class="stack-list"></div></article>
+          </section>
+
+          <footer class="app-footer"><span>© 2026 InfraFlow AI · Portfolio demonstration</span><span>Not affiliated with Cloudflare · All operational data is fictional</span></footer>
+        </main>
+
+        <aside class="copilot" id="copilot-panel" aria-label="AI assistant">
+          <div class="copilot-header"><div class="copilot-title"><span class="copilot-star">✳</span><div><strong>InfraFlow Copilot</strong><span><span class="model-indicator"></span>LLAMA 3.3 · WORKERS AI</span></div></div><button id="set-access-code" title="Set optional demo access code" aria-label="Set demo access code" class="chat-icon-button">⚙</button></div>
+          <div class="copilot-intro"><div class="ai-orb">✳</div><h3>Your operations, decoded.</h3><p>Ask questions about shipments, spot risks, and find your next best action.</p></div>
+          <div id="chat-history" class="chat-history" aria-live="polite"></div>
+          <div class="suggestions" id="chat-suggestions"><div class="suggestions-label">TRY ASKING</div><button data-prompt="Which shipments need immediate attention?">Which shipments need attention? <span>↗</span></button><button data-prompt="Which locations have low inventory?">Where is inventory running low? <span>↗</span></button><button data-prompt="Summarize the most urgent logistics risks.">Summarize critical risks <span>↗</span></button></div>
+          <form id="chat-form" class="chat-compose"><label for="chat-input" class="sr-only">Ask InfraFlow Copilot</label><textarea id="chat-input" maxlength="800" rows="2" placeholder="Ask anything about your logistics…"></textarea><div class="composer-bottom"><span>LLAMA 3.3 <span class="composer-dot">·</span> GROUNDED IN YOUR DATA</span><button id="chat-send" type="submit" aria-label="Send message">➤</button></div></form>
+          <div class="copilot-disclaimer">AI can make mistakes. Verify important decisions.</div>
+        </aside>
+      </div>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="modal-backdrop" class="modal-backdrop" hidden><section class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-top"><div><div class="eyebrow">SHIPMENT DETAILS</div><h2 id="modal-title">Shipment</h2></div><button id="close-modal" class="modal-close" aria-label="Close dialog">×</button></div><div id="modal-content"></div></section></div>
+</body>
+</html>

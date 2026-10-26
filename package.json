@@ -1,0 +1,29 @@
+{
+  "name": "infraflow-ai",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare-native AI logistics operations demo, powered by Llama 3.3 on Workers AI",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:local": "wrangler d1 migrations apply infraflow-db --local",
+    "db:remote": "wrangler d1 migrations apply infraflow-db --remote",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "npm run typecheck && npm run test",
+    "test:browser": "playwright test"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5",
+    "miniflare": "^5.20261023.0-beta",
+    "tsx": "^4.19.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.45.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
